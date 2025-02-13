@@ -2,6 +2,8 @@ import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import { Box, Heading, HStack, IconButton, Image, Text, useColorModeValue, useToast } from '@chakra-ui/react'
 import React from 'react'
 import { useFamilytreeStore } from '../store/familytree';
+import { Link } from 'react-router-dom';
+
 
 const FamilytreeCard = ({ familytree }) => {
     const textColor = useColorModeValue("gray.600", "gray.200");
@@ -54,7 +56,9 @@ const FamilytreeCard = ({ familytree }) => {
             </Text>
 
             <HStack spacing={2}>
-                <IconButton icon={<EditIcon />}  colorScheme='blue' />
+                <Link to={`/treeeditpage/${familytree._id}`}>
+                    <IconButton icon={<EditIcon />} colorScheme='blue' />
+                </Link>
                 <IconButton icon={<DeleteIcon />} onClick={() => handleDeleteProduct(familytree._id)} colorScheme='red' />
             </HStack>
         </Box>

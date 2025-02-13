@@ -8,5 +8,4 @@ router.post('/', createfamilytree);
 router.put("/:id", updateFamilytree);
 router.delete("/:id", deleteFamilytree);
 
-
 export default router;

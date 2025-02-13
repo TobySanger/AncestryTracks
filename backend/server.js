@@ -4,6 +4,7 @@ import { connectDB } from './config/db.js';
 import path from 'path';
 
 import FamilytreeRoutes from './routes/familytree.route.js';
+import TreeMemberRoutes from './routes/treemember.route.js';
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ const __dirname = path.resolve();
 app.use(express.json()); // Allows us to accept JSON data in the req.body
 
 app.use("/api/familytrees", FamilytreeRoutes);
+app.use("/api/treemembers", TreeMemberRoutes);
 
 if(process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '/frontend/dist')));
