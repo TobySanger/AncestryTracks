@@ -80,7 +80,7 @@ AddFamilyMemberCard.propTypes = {
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     selectedMember: PropTypes.object,
-    relationType: PropTypes.string.isRequired,
+    relationType: PropTypes.string,
     setRelationType: PropTypes.func.isRequired,
   };
 
