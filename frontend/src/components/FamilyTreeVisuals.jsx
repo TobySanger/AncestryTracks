@@ -1,141 +1,220 @@
-import { Box, useDisclosure, IconButton } from '@chakra-ui/react';
-import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
+import { Box, useDisclosure } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import Tree from 'react-d3-tree';
 import AddFamilyMemberCard from './AddFamilyMemberCard';
 import { useFamilyMemberStore } from '../store/familymember';
+import CustomTreeNode from './CustomTreeNode';
+import { useToast } from '@chakra-ui/react'; 
+
 
 const FamilyTreeVisuals = ({ treeId }) => {
-    const { familyMembers, fetchFamilyMembers, addFamilyMember } = useFamilyMemberStore();
-    const { isOpen, onOpen, onClose } = useDisclosure();
-    const [tree, setTree] = useState(null); // hook
-    const [isLoading, setIsLoading] = useState(true); // Track loading state
-    const [selectedMember, setSelectedMember] = useState(null);
-    const [relationType, setRelationType] = useState("");
+  const { familyMembers, fetchFamilyMembers, addFamilyMember, addMemberRelations } = useFamilyMemberStore();
 
-    useEffect(() => {
-        const loadFamilyMembers = async () => {
-            if (treeId) {
-                setIsLoading(true); // Indicate data is loading
-                await fetchFamilyMembers(treeId);
-                setIsLoading(false); // Set loading to false after fetching
-            }
-        };
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-        setTree(null); // Clear tree data when switching trees
-        loadFamilyMembers();
-    }, [treeId]);
+  const [tree, setTree] = useState(null);
+  const close = () => setIsOpen(false);
 
-    useEffect(() => {
-        if (!isLoading) {
-            if (familyMembers.length === 0) {
-                onOpen(); // Open modal only if still empty after fetching
-            } else {
-                const formattedTree = transformToD3Tree(familyMembers);
-                setTree(formattedTree);
-            }
-        }
-    }, [familyMembers, isLoading]);
+  const [selectedMember, setSelectedMember] = useState(null);
+  const [relationType, setRelationType] = useState("");
 
-    const handleAddMember = async (name) => {
-        const newMember = {
-            treeId,
-            fullName: name,
-            birthDate: new Date().toISOString(),
-            relations: {}
-        };
-        const response = await addFamilyMember(newMember);
-        if (response.success) {
-            onClose();
-        }
+  const toast = useToast();
+  const { deleteFamilyMember } = useFamilyMemberStore(); // 👈 Add this
+
+  const handleDeleteMember = async (memberId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this family member?");
+    if (!confirmDelete) return;
+
+    const { success, message } = await deleteFamilyMember(memberId);
+
+    if (!success) {
+      toast({
+        title: "Error deleting member",
+        description: message || "Something went wrong.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: "Member Deleted",
+        description: message || "The family member has been removed.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+
+      await fetchFamilyMembers(treeId); // 🔁 Refresh tree
+    }
+  };
+
+
+  useEffect(() => {
+    const loadFamilyMembers = async () => {
+      if (treeId) {
+        await fetchFamilyMembers(treeId);
+      };
     };
+    loadFamilyMembers();
+  }, [fetchFamilyMembers, treeId]);
 
-    // Added 
-    const handleAddRelation = (nodeDatum, relation) => {
-        setSelectedMember(nodeDatum);
-        setRelationType(relation);
-        onOpen();
+  useEffect(() => {
+    if (familyMembers.length === 0) {
+        setSelectedMember(null); // No parent yet
+        setRelationType(""); // Clear relation selection
+        onOpen(); // Open modal automatically for first member
+    } else { 
+        const formattedTree = transformToD3Tree(familyMembers);
+        setTree(formattedTree);
+    }
+}, [familyMembers]);
+
+
+
+  const handleNodeClick = (nodeData) => {
+    console.log("Clicked node data:", nodeData);
+    setSelectedMember(nodeData.data); // Store clicked member data
+    setRelationType(""); 
+    onOpen(); // Open modal to add a family member
+  };
+
+  const handleAddMember = async (name, relation) => {
+    console.log("🧩 handleAddMember called with:", {
+      name,
+      relation,
+      selectedMember,
+    });
+  
+    if (!name || (selectedMember && !relation)) {
+      console.warn("⚠️ Name or relation missing. Skipping addMember.");
+      return;
+    }
+  
+    const newMember = {
+      treeId,
+      fullName: name,
+      birthDate: new Date().toISOString(),
     };
+  
+    const response = await addFamilyMember(newMember);
+    console.log("✅ addFamilyMember response:", response);
+  
+    if (response.success && response.data) {
+      const newMemberId = response.data._id;
+  
+      // ✅ Add relation if selectedMember and relationType exist
+      if (selectedMember && relation) {
+        console.log("🔗 Calling addMemberRelations with:", {
+          memberId: selectedMember._id,
+          relationType: relation,
+          relatedMemberId: newMemberId,
+        });
+  
+        const relationResult = await addMemberRelations({
+          memberId: selectedMember._id,
+          relationType: relation,
+          relatedMemberId: newMemberId,
+        });
+  
+        console.log("✅ addMemberRelations response:", relationResult);
+      }
+  
+      await fetchFamilyMembers(treeId);
+      onClose();
+    } else {
+      console.error("❌ Failed to add family member:", response.message);
+    }
+  };
+  
+  
 
-    const renderSquareNode = ({ nodeDatum }) => {
-        const isPlaceholder = nodeDatum._id === "empty-root";
 
-        return (
-            <g>
-                {/* Main Square Node */}
-                <rect 
-                    width="120" height="70" x="-60" y="-35" 
-                    fill={isPlaceholder ? "#A50053" : "#3498db"}
-                    stroke={isPlaceholder ? "#D81B60" : "#2980b9"} 
-                    strokeWidth="2" rx="8" ry="8"
-                    style={{ cursor: isPlaceholder ? "pointer" : "default" }}
-                />
-                <text x="0" y="-10" textAnchor="middle" dominantBaseline="middle" fill='white' fontSize="12">
-                    {nodeDatum.name}
-                </text>
+  return (
+    <Box h="100vh" w="100%" >
+      {tree ? 
+      <Tree 
+        data={tree} 
+        orientation="vertical"
+        onNodeClick={handleNodeClick}
+        translate={{
+          x: 600,
+          y: 300
+        }}
+        nodeSize={{
+          x: 200,
+          y: 250
+        }}
+        pathFunc="step"
+      
+        renderCustomNodeElement={(rd3tProps) => (
+          <CustomTreeNode
+            nodeDatum={rd3tProps.nodeDatum}
+            toggleNode={(node) => {
+              setSelectedMember(node);
+              setRelationType("");
+              onOpen();
+            }}
+            onEdit={(node) => {
+              setSelectedNode(node);
+              setRelationType(""); // Or a separate "edit mode" if needed
+              onOpen();
+            }}
+            onDelete={(node) => {
+              handleDeleteMember(node._id); // Pass the ID of the member to delete
+            }}
+          />
+        )}
 
-                <foreignObject x="-50" y="10" width="100" height="30">
-                    <Box display="flex" justifyContent="center" alignItems="center">
-                        <IconButton icon={<EditIcon />} colorScheme="blue" size="xs" mx="1" />
-                        <IconButton icon={<DeleteIcon />} colorScheme="red" size="xs" mx="1" />
-                    </Box>
-                </foreignObject>
-
-                {/* Clickable Areas for Adding Relations */}
-                {/* Top box for adding parents */}
-                <rect x="-20" y="-55" width="40" height="20" fill="transparent"
-                      stroke="black" strokeWidth="1" 
-                      onClick={() => handleAddRelation(nodeDatum, "parent")}
-                />
-            
-                {/* 🔵 Bottom Box for Adding a Child */}
-                <rect x="-20" y="40" width="40" height="20" fill="transparent"
-                      stroke="black" strokeWidth="1" 
-                      onClick={() => handleAddRelation(nodeDatum, "child")}
-                />
-            </g>
-        );
-    };
-
-    return (
-        <Box h="100vh" w="100%">
-            {tree ? (
-                <Tree 
-                    data={tree} 
-                    translate={{ x: 300, y: 200 }}
-                    renderCustomNodeElement={renderSquareNode}
-                />
-            ) : isLoading ? ( 
-                <p>Loading tree...</p>
-            ) : (
-                <p>No members found. Add a new family member.</p>
-            )}
-            <AddFamilyMemberCard 
-                isOpen={isOpen} 
-                onClose={onClose} 
-                onSubmit={handleAddMember}
-            />
-        </Box>
-    );
+        /> : <p>Loading tree...</p>}
+      <AddFamilyMemberCard 
+        isOpen={isOpen} 
+        onClose={onClose} 
+        onSubmit={handleAddMember}
+        selectedMember={selectedMember}
+        relationType={relationType}
+        setRelationType={setRelationType}/>
+    </Box>
+  );
 };
 
-/** Define transformToD3Tree to FIX the error */
+
+
+// 🔁 Convert DB data to react-d3-tree format
 const transformToD3Tree = (members) => {
-    const memberMap = {};
-    members.forEach(member => {
-        memberMap[member._id] = { name: member.fullName, children: [] };
-    });
+  const memberMap = {};
 
-    members.forEach(member => {
-        if (member.relations.father && memberMap[member.relations.father]) {
-            memberMap[member.relations.father].children.push(memberMap[member._id]);
-        }
-        if (member.relations.mother && memberMap[member.relations.mother]) {
-            memberMap[member.relations.mother].children.push(memberMap[member._id]);
-        }
-    });
+  // Build base nodes
+  members.forEach(member => {
+    memberMap[member._id] = {
+      name: member.fullName,
+      _id: member._id,
+      relations: member.relations,
+      children: []
+    };
+  });
 
-    return Object.values(memberMap)[0] || null; // Return root member or null if no members exist
+  // Link parents as "children" in visual tree
+  members.forEach(member => {
+    const current = memberMap[member._id];
+
+    // Attach parents as children (flipping direction for visual tree)
+    (member.relations.parents || []).forEach(parent => {
+      const parentId = parent._id || parent;
+      if (memberMap[parentId]) {
+        current.children.push(memberMap[parentId]);
+      }
+    });
+  });
+
+  // Pick a child with no children as root (usually latest generation)
+  const root = members.find(
+    member => !member.relations.children || member.relations.children.length === 0
+  );
+
+  return root ? memberMap[root._id] : Object.values(memberMap)[0];
 };
+
+
+
 
 export default FamilyTreeVisuals;
