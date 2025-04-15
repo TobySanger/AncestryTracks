@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom'
 
 
 const Footer = () => {
+    const textColor = useColorModeValue("white", "gray.200");
+
   return (
-    <Container as="Footer" maxW="100%" bg="gray.700" px={4}>
+    <Container as="Footer" maxW="100%" bg="gray.700" color={textColor} px={4}>
         <Flex
             maxW="100%"
             h={12}

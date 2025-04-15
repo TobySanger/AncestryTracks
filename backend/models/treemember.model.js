@@ -1,3 +1,4 @@
+// w1888481 Toby Sanger
 import mongoose from "mongoose";
 
 const treeMemberSchema = new mongoose.Schema({
@@ -8,11 +9,17 @@ const treeMemberSchema = new mongoose.Schema({
     },
     fullName: { 
         type: String, 
-        required: true 
+        required: true,
+        index: true // Makes search field quicker
+    },
+    gender: {
+        type: String,
+        enum: ["male", "female"],
+        required: false
     },
     birthDate: { 
         type: Date, 
-        required: true 
+        index: true
     },
     deathDate: { 
         type: Date 
@@ -24,12 +31,18 @@ const treeMemberSchema = new mongoose.Schema({
         type: String 
     },
     relations: {
-        father: { type: mongoose.Schema.Types.ObjectId, ref: "TreeMember" },
-        mother: { type: mongoose.Schema.Types.ObjectId, ref: "TreeMember" },
-        children: [{ type: mongoose.Schema.Types.ObjectId, ref: "TreeMember" }]
-
-    }
+        type: new mongoose.Schema({
+          parents: { type: [mongoose.Schema.Types.ObjectId], ref: "TreeMember", default: [] },
+          spouses: { type: [mongoose.Schema.Types.ObjectId], ref: "TreeMember", default: [] },
+          children: { type: [mongoose.Schema.Types.ObjectId], ref: "TreeMember", default: [] },
+        }, { _id: false }),
+        default: {}
+      }
+      
+      
+    
 }, { timestamps: true });
 
 const TreeMember = mongoose.model("TreeMember", treeMemberSchema);
 export default TreeMember;
+

@@ -20,7 +20,7 @@ const TreeCollectionPage = () => {
       <VStack spacing={8}>
         <HStack alignItems={"center"}>
           <Text
-            fontSize={"36"}
+            fontSize={"30"}
             fontWeight={"bold"}
             bgGradient='linear(to-r, #7928CA, #FF0080)'
             bgClip={"text"}

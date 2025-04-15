@@ -9,20 +9,15 @@ const AddFamilyMemberCard = ({
 
     const getTitle = () => {
         if (!selectedMember) return "Add Family Member";
-    
-        // Only allow specific options based on relationType
-        switch (relationType) {
-            case "parent":
-                return `Add Parent to ${selectedMember.name} || "New Parent"`;
-            case "child":
-                return `Add Child to ${selectedMember.name} || "New Child"`;
-            default:
-                return "Add Family Member";
-        }
+        return `Add a Family Member to ${selectedMember.name}`;
     };
 
-    // console.log("🟢 Modal Open - selectedMember:", selectedMember, "relationType:", relationType);
-
+    const handleSubmit = () => {
+        onSubmit(name, relationType);
+        setName(""); // Reset for next time
+        setRelationType("");
+        onClose();
+      };
 
     return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -33,7 +28,7 @@ const AddFamilyMemberCard = ({
 
                 <ModalBody>
                     <FormControl>
-                        <FormLabel>Family Member Name test</FormLabel>
+                        <FormLabel>Family member name</FormLabel>
                         <Input 
                             value={name}
                             onChange={(e) => setName(e.target.value)}
@@ -42,13 +37,14 @@ const AddFamilyMemberCard = ({
                     </FormControl>
 
                     {/* Only show relation options when adding a parent */}
-                    {selectedMember && relationType === "parent" && (
+                    {selectedMember && (
                         <FormControl mt={4}>
-                            <FormLabel>Select Parent Type</FormLabel>
+                            <FormLabel>Select relation</FormLabel>
                             <RadioGroup onChange={setRelationType} value={relationType}>
                             <Stack direction="column">
-                                <Radio value="father">Father</Radio>
-                                <Radio value="mother">Mother</Radio>
+                                <Radio value="parent">Parent</Radio>
+                                <Radio value="child">Child</Radio>
+                                <Radio value="spouse">Spouse</Radio>
                             </Stack>
                             </RadioGroup>
                         </FormControl>
@@ -60,12 +56,7 @@ const AddFamilyMemberCard = ({
                     <Button 
                         colorScheme="blue" 
                         disabled={!name || (selectedMember && !relationType)}
-                        // onClick={() => onSubmit(name)}
-
-                        onClick={() => {
-                            onSubmit(name),
-                            onClose()
-                        }}
+                        onClick={handleSubmit}
                     >
                         Add
                     </Button>

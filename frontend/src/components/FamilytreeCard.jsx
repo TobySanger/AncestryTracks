@@ -12,7 +12,7 @@ const FamilytreeCard = ({ familytree }) => {
     const {deleteFamilytree} = useFamilytreeStore();
     const toast = useToast();
 
-    const handleDeleteProduct = async (pid) => {
+    const handleDeleteTree = async (pid) => {
         // console.log("Deleting familytree with id:", pid); // Debugging log
         const {success,message} = await deleteFamilytree(pid);
         if(!success) {
@@ -59,7 +59,7 @@ const FamilytreeCard = ({ familytree }) => {
                 <Link to={`/treeeditpage/${familytree._id}`}>
                     <IconButton icon={<EditIcon />} colorScheme='blue' />
                 </Link>
-                <IconButton icon={<DeleteIcon />} onClick={() => handleDeleteProduct(familytree._id)} colorScheme='red' />
+                <IconButton icon={<DeleteIcon />} onClick={() => handleDeleteTree(familytree._id)} colorScheme='red' />
             </HStack>
         </Box>
     </Box>
