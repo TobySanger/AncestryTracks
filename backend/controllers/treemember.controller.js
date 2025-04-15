@@ -6,8 +6,8 @@ export const getTreeMembers = async (req, res) => {
     const { treeId } = req.params;
     try {
         const members = await TreeMember.find({ treeId })
-            .populate("relations.father")
-            .populate("relations.mother")
+            .populate("relations.parents")
+            .populate("relations.spouses")
             .populate("relations.children");
         res.status(200).json({ success: true, data: members });
     } catch (error) {
@@ -26,26 +26,49 @@ export const createTreeMember = async (req, res) => {
 
     try {
         const newMember = new TreeMember({ treeId, fullName, birthDate, deathDate, description, photo, relations });
-
-        // Save new member
         await newMember.save();
-
-        // Update existing family members' relations dynamically
-        if (relations) {
-            if (relations.father) await TreeMember.findByIdAndUpdate(relations.father, { $push: { children: newMember._id } });
-            if (relations.mother) await TreeMember.findByIdAndUpdate(relations.mother, { $push: { children: newMember._id } });
-            if (relations.children) {
-                for (let child of relations.children) {
-                    await TreeMember.findByIdAndUpdate(child, { $set: { father: newMember._id } }); // Assuming father, can adjust for mother
-                }
-            }
-           
-        }
-
         res.status(201).json({ success: true, data: newMember });
     } catch (error) {
         console.error("Error creating family member:", error.message);
         res.status(500).json({ success: false, message: "Server Error" });
+    }
+};
+
+export const addMemberRelations = async (req, res) => {
+    const { memberId, relationType, relatedMemberId } = req.body;
+
+    if (!memberId || !relationType || !relatedMemberId) {
+        return res.status(400).json({ success: false, message: "Missing required fields." });
+    }
+
+    try {
+        const member = await TreeMember.findById(memberId);
+        const relatedMember = await TreeMember.findById(relatedMemberId);
+
+        if (!member || !relatedMember) {
+            return res.status(404).send('Member not found');
+        }
+
+        // Update both sides of the relation
+        if (relationType === 'parent') {
+            member.relations.parents.push(relatedMemberId);
+            relatedMember.relations.children.push(memberId); // ✅ update child->parent and parent->child
+        } else if (relationType === 'child') {
+            member.relations.children.push(relatedMemberId);
+            relatedMember.relations.parents.push(memberId);
+        } else if (relationType === 'spouse') {
+            member.relations.spouses.push(relatedMemberId);
+            relatedMember.relations.spouses.push(memberId); // ✅ mutual spouse reference
+        } else {
+            return res.status(400).send('Invalid relation type');
+        }
+
+        await member.save();
+        await relatedMember.save();
+
+        res.status(200).json({ success: true, data: member });
+    } catch (error) {
+        res.status(400).send(error.message);
     }
 };
 
