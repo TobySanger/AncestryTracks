@@ -1,4 +1,4 @@
-import {create} from "zustand" // Global store library
+import {create} from "zustand"
 
 export const useFamilytreeStore = create((set) => ({
     familytrees: [],
