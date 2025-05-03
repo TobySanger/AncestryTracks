@@ -16,11 +16,10 @@ const AboutUs = () => {
                 The Ancestry Tracks Project 2025
             </Text>
             <Text
-                fontSize={{ base: "10", sm: "15" }}
+                fontSize={{ base: "10", sm: "18" }}
                 fontWeight={"bold"}
                 textTransform={"uppercase"}
                 textAlign={"center"}
-                color="white"
                 padding={4}>
                 A University of Westminster Project.
                 <br />
@@ -28,7 +27,13 @@ const AboutUs = () => {
                 <br />
                 @2025.
             </Text>
-            <Text padding={8} textAlign={"center"}>
+            <Text 
+                padding={8} 
+                textAlign={"center"} 
+                fontSize={{ base: "10", sm: "15" }}    
+                fontWeight={"bold"}
+                >
+
                 Student: Toby Sanger
                 <br />
                 <p>Email: <a href="mailto:w1888481@westminster.ac.uk">w1888481@wesminster.ac.uk</a></p>
