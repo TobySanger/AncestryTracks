@@ -51,6 +51,7 @@ const CustomTreeNode = ({ nodeDatum, toggleNode, onEdit, onDelete }) => {
           <Text fontSize="md" fontWeight="semibold" textAlign="center">
             {nodeDatum.name}
           </Text>
+          
 
           <Box display="flex" gap={2}>
             <IconButton

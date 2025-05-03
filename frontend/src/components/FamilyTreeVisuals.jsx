@@ -5,7 +5,7 @@ import AddFamilyMemberCard from './AddFamilyMemberCard';
 import { useFamilyMemberStore } from '../store/familymember';
 import CustomTreeNode from './CustomTreeNode';
 import { useToast } from '@chakra-ui/react'; 
-
+import TreeMemberCard from './TreeMemberCard';
 
 const FamilyTreeVisuals = ({ treeId }) => {
   const { familyMembers, fetchFamilyMembers, addFamilyMember, addMemberRelations } = useFamilyMemberStore();
@@ -19,7 +19,46 @@ const FamilyTreeVisuals = ({ treeId }) => {
   const [relationType, setRelationType] = useState("");
 
   const toast = useToast();
-  const { deleteFamilyMember } = useFamilyMemberStore(); // 👈 Add this
+  const { deleteFamilyMember } = useFamilyMemberStore(); 
+
+  const [editingMember, setEditingMember] = useState(null);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const { updateFamilyMember } = useFamilyMemberStore(); 
+
+  const handleEdit = (node) => {
+    setEditingMember(node);
+    setIsEditOpen(true);
+  };
+
+  const handleSaveEdit = async (updatedData) => {
+    console.log("🛠️ Updating member with data:", updatedData); 
+    const { _id, ...fieldsToUpdate } = updatedData;
+  
+    const { success, message } = await updateFamilyMember(_id, fieldsToUpdate);
+  
+    if (!success) {
+      toast({
+        title: "Update Failed",
+        description: message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      return;
+    }
+  
+    toast({
+      title: "Family Member Updated",
+      description: "Changes saved successfully.",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+  
+    setIsEditOpen(false);
+    await fetchFamilyMembers(treeId); // Refresh tree
+  };
+
 
   const handleDeleteMember = async (memberId) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this family member?");
@@ -79,14 +118,14 @@ const FamilyTreeVisuals = ({ treeId }) => {
   };
 
   const handleAddMember = async (name, relation) => {
-    console.log("🧩 handleAddMember called with:", {
+    console.log(" handleAddMember called with:", {
       name,
       relation,
       selectedMember,
     });
   
     if (!name || (selectedMember && !relation)) {
-      console.warn("⚠️ Name or relation missing. Skipping addMember.");
+      console.warn(" Name or relation missing. Cannot add member.");
       return;
     }
   
@@ -97,14 +136,13 @@ const FamilyTreeVisuals = ({ treeId }) => {
     };
   
     const response = await addFamilyMember(newMember);
-    console.log("✅ addFamilyMember response:", response);
+    console.log(" addFamilyMember result:", response);
   
     if (response.success && response.data) {
       const newMemberId = response.data._id;
   
-      // ✅ Add relation if selectedMember and relationType exist
       if (selectedMember && relation) {
-        console.log("🔗 Calling addMemberRelations with:", {
+        console.log(" adding relation", {
           memberId: selectedMember._id,
           relationType: relation,
           relatedMemberId: newMemberId,
@@ -116,13 +154,13 @@ const FamilyTreeVisuals = ({ treeId }) => {
           relatedMemberId: newMemberId,
         });
   
-        console.log("✅ addMemberRelations response:", relationResult);
+        console.log(" addMemberRelations result:", relationResult);
       }
   
       await fetchFamilyMembers(treeId);
       onClose();
     } else {
-      console.error("❌ Failed to add family member:", response.message);
+      console.error(" Failed to add family member:", response.message);
     }
   };
   
@@ -154,13 +192,9 @@ const FamilyTreeVisuals = ({ treeId }) => {
               setRelationType("");
               onOpen();
             }}
-            onEdit={(node) => {
-              setSelectedNode(node);
-              setRelationType(""); // Or a separate "edit mode" if needed
-              onOpen();
-            }}
+            onEdit={handleEdit}
             onDelete={(node) => {
-              handleDeleteMember(node._id); // Pass the ID of the member to delete
+              handleDeleteMember(node._id); 
             }}
           />
         )}
@@ -173,6 +207,14 @@ const FamilyTreeVisuals = ({ treeId }) => {
         selectedMember={selectedMember}
         relationType={relationType}
         setRelationType={setRelationType}/>
+        
+      <TreeMemberCard
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        member={editingMember}
+        onSave={handleSaveEdit}
+      />
+
     </Box>
   );
 };
@@ -188,6 +230,10 @@ const transformToD3Tree = (members) => {
     memberMap[member._id] = {
       name: member.fullName,
       _id: member._id,
+      birthDate: member.birthDate,
+      deathDate: member.deathDate,
+      description: member.description,
+      photo: member.photo,
       relations: member.relations,
       children: []
     };

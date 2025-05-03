@@ -6,6 +6,8 @@ import CreateTreePage from "./pages/CreateTreePage";
 import Navbar from "./components/Navbar";
 
 import HomePage from "./pages/HomePage";
+import UserAccountPage from "./pages/UserAccountPage";
+import AboutUs from "./pages/AboutUs";
 import TreeEditPage from "./pages/TreeEditPage";
 import Footer from "./components/Footer";
 
@@ -19,6 +21,8 @@ function App() {
         <Route path="/treecollection" element={<TreeCollectionPage />} />
         <Route path="/create" element={<CreateTreePage />} />
         <Route path="/homepage" element={<HomePage />} />
+        <Route path="/useraccount" element={<UserAccountPage />} />
+        <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/treeeditpage/:id" element={<TreeEditPage />} />
       </Routes>
       </Box>

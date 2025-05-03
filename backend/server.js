@@ -14,11 +14,12 @@ const PORT = process.env.PORT || 3000;
 const __dirname = path.resolve();
 
 // Middleware
-app.use(express.json()); // Allows us to accept JSON data in the req.body
+app.use(express.json()); 
 
 app.use("/api/familytrees", FamilytreeRoutes);
 app.use("/api/treemembers", TreeMemberRoutes);
 
+// Check for environment 
 if(process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '/frontend/dist')));
     app.get('*', (req, res) => {

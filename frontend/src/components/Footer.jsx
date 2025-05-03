@@ -18,9 +18,8 @@ const Footer = () => {
             }}
         >
                 <HStack spacing={4} alignItems={"center"}>
-                    <Link to="/" >About Us </Link>
-                    <Link to="/" >Contact Us </Link>
-                    <Link to="/" >Linkedin </Link>
+                    <Link to="/aboutus" >About Us </Link>
+
                 </HStack>
 
                 <Text
@@ -29,12 +28,11 @@ const Footer = () => {
                     bgGradient='linear(to-r,rgb(225, 223, 228),rgb(250, 248, 249))'
                     bgClip={"text"}
                 >
-                    <Link to="/" > © Ancestry Tracks (2025) </Link>
+                    <Link to="/homepage" > © Ancestry Tracks (2025) </Link>
                 </Text>
 
                 <HStack spacing={4} alignItems={"left"}>
-                    <Link to="/" >Settings </Link>
-                    <Link to="/" >FAQ Page </Link>
+                    <Link to={"/useraccount"}>Settings </Link>
                 </HStack>
 
             </Flex>

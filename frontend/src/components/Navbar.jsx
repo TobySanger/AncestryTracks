@@ -42,6 +42,11 @@ const Navbar = () => {
                 <Button onClick={toggleColorMode}>
                     {colorMode === "light" ? <IoMoon/> : <LuSun size="20"/>}
                 </Button>
+                <Link to={"/useraccount"}>
+                    <Text fontSize={15} fontWeight={"bold"}>
+                        User 
+                    </Text>
+                </Link>
             </HStack>
         </Flex>
     

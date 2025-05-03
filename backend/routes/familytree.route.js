@@ -1,5 +1,6 @@
 import express from 'express';
-import { createfamilytree, deleteFamilytree, getFamilytrees, updateFamilytree } from '../controllers/familytree.controller.js';
+import { createfamilytree, deleteFamilytree, 
+    getFamilytrees, updateFamilytree } from '../controllers/familytree.controller.js';
 
 const router = express.Router();
 
@@ -9,3 +10,4 @@ router.put("/:id", updateFamilytree);
 router.delete("/:id", deleteFamilytree);
 
 export default router;
+

@@ -1,4 +1,5 @@
-import { Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Radio, RadioGroup, Stack } from '@chakra-ui/react'
+import { Button, FormControl, FormLabel, Input, Modal, ModalBody, ModalCloseButton, 
+    ModalContent, ModalFooter, ModalHeader, ModalOverlay, Radio, RadioGroup, Stack } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
@@ -14,7 +15,7 @@ const AddFamilyMemberCard = ({
 
     const handleSubmit = () => {
         onSubmit(name, relationType);
-        setName(""); // Reset for next time
+        setName(""); 
         setRelationType("");
         onClose();
       };
@@ -36,7 +37,7 @@ const AddFamilyMemberCard = ({
                         />
                     </FormControl>
 
-                    {/* Only show relation options when adding a parent */}
+                    {/* Only showing relation options when adding a parent */}
                     {selectedMember && (
                         <FormControl mt={4}>
                             <FormLabel>Select relation</FormLabel>
