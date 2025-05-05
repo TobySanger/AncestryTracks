@@ -83,7 +83,7 @@ const FamilyTreeVisuals = ({ treeId }) => {
         isClosable: true,
       });
 
-      await fetchFamilyMembers(treeId); // 🔁 Refresh tree
+      await fetchFamilyMembers(treeId); 
     }
   };
 
@@ -221,7 +221,7 @@ const FamilyTreeVisuals = ({ treeId }) => {
 
 
 
-// 🔁 Convert DB data to react-d3-tree format
+// Convert DB data to react-d3-tree format
 const transformToD3Tree = (members) => {
   const memberMap = {};
 

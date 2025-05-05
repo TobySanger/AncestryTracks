@@ -30,7 +30,7 @@ export const useFamilyMemberStore = create((set) => ({
             return { 
                 success: true, 
                 message: "Family member added successfully",
-                data: data.data // ✅ return the created member
+                data: data.data 
 
             };
         } else {

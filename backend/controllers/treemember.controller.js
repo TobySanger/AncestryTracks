@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import TreeMember from "../models/treemember.model.js";
 
-// 🔹 Get all family members for a tree
 export const getTreeMembers = async (req, res) => {
     const { treeId } = req.params;
     try {
@@ -16,7 +15,6 @@ export const getTreeMembers = async (req, res) => {
     }
 };
 
-// 🔹 Create a new family member
 export const createTreeMember = async (req, res) => {
     const { treeId, fullName, birthDate, deathDate, description, photo, relations } = req.body;
 
@@ -52,13 +50,13 @@ export const addMemberRelations = async (req, res) => {
         // Update both sides of the relation
         if (relationType === 'parent') {
             member.relations.parents.push(relatedMemberId);
-            relatedMember.relations.children.push(memberId); // ✅ update child->parent and parent->child
+            relatedMember.relations.children.push(memberId); 
         } else if (relationType === 'child') {
             member.relations.children.push(relatedMemberId);
             relatedMember.relations.parents.push(memberId);
         } else if (relationType === 'spouse') {
             member.relations.spouses.push(relatedMemberId);
-            relatedMember.relations.spouses.push(memberId); // ✅ mutual spouse reference
+            relatedMember.relations.spouses.push(memberId); 
         } else {
             return res.status(400).send('Invalid relation type');
         }
@@ -73,7 +71,6 @@ export const addMemberRelations = async (req, res) => {
 };
 
 
-// 🔹 Update a family member
 export const updateTreeMember = async (req, res) => {
     const { id } = req.params;
     const updates = req.body;
@@ -91,7 +88,6 @@ export const updateTreeMember = async (req, res) => {
     }
 };
 
-// 🔹 Delete a family member
 export const deleteTreeMember = async (req, res) => {
     const { id } = req.params;
 

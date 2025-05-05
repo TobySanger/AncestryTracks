@@ -10,7 +10,7 @@ const treeMemberSchema = new mongoose.Schema({
     fullName: { 
         type: String, 
         required: true,
-        index: true // Makes search field quicker
+        index: true 
     },
     gender: {
         type: String,

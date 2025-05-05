@@ -1,7 +1,6 @@
 import {Box, Container, Flex, HStack, Text, useColorModeValue} from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
 
-
 const Footer = () => {
     const textColor = useColorModeValue("white", "gray.200");
 

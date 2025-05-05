@@ -4,10 +4,10 @@ import { FaUser } from "react-icons/fa";
 
 
 const CustomTreeNode = ({ nodeDatum, toggleNode, onEdit, onDelete }) => {
-    const bg = useColorModeValue("gray.100", "gray.800");       // ✅ Correct value
+    const bg = useColorModeValue("gray.100", "gray.800");   
     const textColor = useColorModeValue("gray.700", "gray.200");
-    const imageBg = useColorModeValue("gray.300", "gray.700"); // Optional tweak
-    const buttonBg = useColorModeValue("blue.200", "blue.700"); // Optional tweak
+    const imageBg = useColorModeValue("gray.300", "gray.700"); 
+    const buttonBg = useColorModeValue("blue.200", "blue.700"); 
   
     return (
     <foreignObject width="160" height="180" x={-80} y={-90}>
@@ -23,7 +23,7 @@ const CustomTreeNode = ({ nodeDatum, toggleNode, onEdit, onDelete }) => {
         justifyContent="space-between"
         boxShadow="lg"
         onClick={() => 
-            toggleNode(nodeDatum)} // ✅ Attach this to trigger modal
+            toggleNode(nodeDatum)} 
         cursor="pointer"
       >
         {/* Top: Image area */}
@@ -59,7 +59,7 @@ const CustomTreeNode = ({ nodeDatum, toggleNode, onEdit, onDelete }) => {
               size="sm"
               colorScheme="blue"
               onClick={(e) => {
-                e.stopPropagation(); // ✅ Prevents edit click from bubbling
+                e.stopPropagation(); 
                 onEdit(nodeDatum);
               }}
               aria-label="Edit"
@@ -70,7 +70,7 @@ const CustomTreeNode = ({ nodeDatum, toggleNode, onEdit, onDelete }) => {
               size="sm"
               colorScheme="red"
               onClick={(e) => {
-                e.stopPropagation(); // ✅ Prevents delete click from bubbling
+                e.stopPropagation(); 
                 onDelete(nodeDatum);
               }}
               aria-label="Delete"
