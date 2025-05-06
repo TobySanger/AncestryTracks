@@ -11,11 +11,21 @@
 import mongoose from 'mongoose';
 
 export const connectDB = async () => {
-    try {
-        const conn = await mongoose.connect(process.env.MONGO_URI,);
-        console.log(`MongoDB Connected: ${conn.connection.host}`);
-    } catch (error) {
-        console.error(`Error: ${error.message}`);
-        process.exit(1); // Process code 1 means exit failure, 0 means success
-    }
-}
+  const uri = process.env.MONGO_URI;
+
+  if (!uri) {
+    console.error('❌ MONGO_URI is undefined. Check your .env file and make sure it is loaded correctly.');
+    process.exit(1);
+  }
+
+  try {
+    const conn = await mongoose.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+  } catch (error) {
+    console.error('❌ MongoDB Connection Error:', error.message);
+    process.exit(1);
+  }
+};
