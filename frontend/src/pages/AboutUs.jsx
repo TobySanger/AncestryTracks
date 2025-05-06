@@ -1,3 +1,10 @@
+// Author : Toby Sanger 
+// Date : 06/05/2025 dd/mm/yyyy
+
+// Description :
+// This file defines the About Us page of the Ancestry Tracks Project.
+// It provides information about the project, including the university affiliation, project type, and contact details.
+
 import React from 'react';
 import { Container, Text } from '@chakra-ui/react';
 

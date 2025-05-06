@@ -1,3 +1,12 @@
+// Author : Toby Sanger 
+// Date : 06/05/2025 dd/mm/yyyy
+
+// Description :
+// This file defines the TreeMemberCard component, which is a modal used for editing family member details.
+// It includes fields for the member's name, birth date, death date, description, and photo But also a coming soon section for AI insights.
+// The component uses Chakra UI for styling and layout, and it manages its state using React hooks.
+// It also handles the submission of the form data to the parent component via the onSave prop.
+
 import { Box, Button, FormControl, FormLabel, Input, Modal, ModalOverlay, 
     ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, 
     Textarea, VStack, HStack, useColorModeValue, Image } from "@chakra-ui/react";
@@ -12,9 +21,11 @@ import { Box, Button, FormControl, FormLabel, Input, Modal, ModalOverlay,
         photo: ""
       });
     
+      // Using Chakra UI's useColorModeValue to set colors based on the current color mode
       const bg = useColorModeValue("white", "gray.800");
       const inputBg = useColorModeValue("gray.200", "gray.700");
     
+      // Effect to populate the form with existing member data when the modal opens
       useEffect(() => {
         if (member) {
           setFormData({
@@ -27,16 +38,23 @@ import { Box, Button, FormControl, FormLabel, Input, Modal, ModalOverlay,
         }
       }, [member]);
     
+      // Handle changes in the input fields
+      // It updates the formData state with the new values
       const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value } = e.target; // 
         setFormData(prev => ({ ...prev, [name]: value }));
       };
     
+      // Handle form submission
+      // It calls the onSave function passed as a prop with the updated member data
+      // and then closes the modal
       const handleSubmit = () => {
         onSave({ ...member, ...formData });
         onClose();
       };
     
+      // Render the modal with input fields for name, birth date, death date, description, and photo
+      // It also includes a placeholder for AI insights
       return (
         <Modal isOpen={isOpen} onClose={onClose} size="5xl">
           <ModalOverlay />

@@ -1,9 +1,24 @@
+// Author : Toby Sanger 
+// Date : 06/05/2025 dd/mm/yyyy
+
+// Description:
+// This file is responsible for rendering each node in the family tree
+// using the react-d3-tree library. It visually displays a family member using a user icon,
+// their name, and two interactive buttons - one for editing the member's information and
+// another for deleting them from the tree.
+
+// The component receives node data (name, ID, etc.) and callback functions for edit/delete
+// operations as props from the FamilyTreeVisuals component. When a node is clicked, it can
+// also trigger the modal for adding a related family member.
+
 import { Box, IconButton, Text, useColorModeValue } from "@chakra-ui/react";
 import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import { FaUser } from "react-icons/fa";
 
 
 const CustomTreeNode = ({ nodeDatum, toggleNode, onEdit, onDelete }) => {
+  // Using Chakra UI's useColorModeValue to set colors based on the current color mode
+  // This allows the component to adapt to light and dark themes
     const bg = useColorModeValue("gray.100", "gray.800");   
     const textColor = useColorModeValue("gray.700", "gray.200");
     const imageBg = useColorModeValue("gray.300", "gray.700"); 
@@ -52,7 +67,7 @@ const CustomTreeNode = ({ nodeDatum, toggleNode, onEdit, onDelete }) => {
             {nodeDatum.name}
           </Text>
           
-
+          {/* Edit and Delete buttons */}
           <Box display="flex" gap={2}>
             <IconButton
               icon={<EditIcon />}

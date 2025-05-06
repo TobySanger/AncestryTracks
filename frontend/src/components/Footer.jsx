@@ -1,7 +1,15 @@
+// Author : Toby Sanger 
+// Date : 06/05/2025 dd/mm/yyyy
+
+// Description :
+// This file defines the global footer used accross the application. 
+// It includes links to the about us page, Home page and user settings.
+
 import {Box, Container, Flex, HStack, Text, useColorModeValue} from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
 
 const Footer = () => {
+    // useColorModeValue is a Chakra UI hook that allows you to set different styles based on the current color mode (light or dark).
     const textColor = useColorModeValue("white", "gray.200");
 
   return (

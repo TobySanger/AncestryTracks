@@ -1,3 +1,10 @@
+// Author : Toby Sanger 
+// Date : 06/05/2025 dd/mm/yyyy
+
+// Description :
+// This is the main entry point of the React application.
+// It sets up global layout structure, routing paths, and the navigation bar and footer components.
+
 import { Box, useColorModeValue } from "@chakra-ui/react";
 import { Route, Routes } from "react-router-dom";
 

@@ -1,13 +1,21 @@
+// Author : Toby Sanger 
+// Date : 06/05/2025 dd/mm/yyyy
+
+// Description :
+// This file defines the global navigation bar component for the application.
+// It includes branding (Ancestry Tracjks), a link to the tree collection, a toggle for light/dark mode,
+// and a link to the user account settings.
+
 import { Button, Container, Flex, HStack, Text, useColorMode } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
 
 import { GiFruitTree } from "react-icons/gi"
-import { PlusSquareIcon } from "@chakra-ui/icons";
 import { IoMoon } from "react-icons/io5"
 import { LuSun } from "react-icons/lu"
 
 
 const Navbar = () => {
+    // useColorMode is a Chakra UI hook that allows us to access the current color mode (light or dark) and a function to toggle it.
     const { colorMode, toggleColorMode } = useColorMode()
 
   return (
@@ -39,7 +47,7 @@ const Navbar = () => {
                         <GiFruitTree fontSize={20}/>
                     </Button>
                 </Link>
-                <Button onClick={toggleColorMode}>
+                <Button onClick={toggleColorMode}> {/* // Toggles between light and dark mode */}
                     {colorMode === "light" ? <IoMoon/> : <LuSun size="20"/>}
                 </Button>
                 <Link to={"/useraccount"}>
